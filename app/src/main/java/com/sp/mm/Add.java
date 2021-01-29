@@ -153,7 +153,10 @@ public class Add extends AppCompatActivity {
         Saturday = (CheckBox) findViewById(R.id.dv_saturday);
         Sunday = (CheckBox) findViewById(R.id.dv_sunday);
 
-        //I like pussies
+        fAuth = FirebaseAuth.getInstance();
+        fstore = FirebaseFirestore.getInstance();
+
+
 
         spinnerDropDownView =(Spinner)findViewById(R.id.spinner_dose_units);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(Add.this, android.R.layout.simple_list_item_1, spinnerValueHoldValue);
@@ -206,11 +209,28 @@ public class Add extends AppCompatActivity {
                 Toast.makeText(Add.this, result.toString(),
                         Toast.LENGTH_LONG).show();
 
-                }
-            });
+                FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                DocumentReference documentReference = rootRef
+                        .collection("users").document(userID)
+                        .collection("medications").document(medicationID);
+
+                Map<String,Object> user = new HashMap<>();
+                user.put("Medication Name",medNameString);      //Add into firestore
+                user.put("Medication Days",result.toString());    //Add into firestore
+                user.put("Medication Time",medTimeString);    //Add into firestore
+                user.put("Medication Quantity",quantityString);    //Add into firestore
+                user.put("Medication Shape",spinnerDropDownView.getSelectedItem().toString());    //Add into firestore
+                documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("TAG","onSuccess: user Profile is created for"+ userID);
+                    }
+                });
+
+            }
 
 
-
+        });
 
         tvMedicineTime.setOnClickListener(new View.OnClickListener() {
             @Override
