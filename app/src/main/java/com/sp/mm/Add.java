@@ -153,7 +153,7 @@ public class Add extends AppCompatActivity {
         Saturday = (CheckBox) findViewById(R.id.dv_saturday);
         Sunday = (CheckBox) findViewById(R.id.dv_sunday);
 
-
+        //I like pussies
 
         spinnerDropDownView =(Spinner)findViewById(R.id.spinner_dose_units);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(Add.this, android.R.layout.simple_list_item_1, spinnerValueHoldValue);
@@ -210,7 +210,7 @@ public class Add extends AppCompatActivity {
             });
 
 
-        
+
 
         tvMedicineTime.setOnClickListener(new View.OnClickListener() {
             @Override
