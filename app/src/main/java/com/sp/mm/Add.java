@@ -3,9 +3,7 @@ package com.sp.mm;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -20,54 +18,33 @@ import android.widget.TimePicker;
 import android.app.Activity;
 
 import android.content.Intent;
-import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sp.mm.folder.DayViewCheckBox;
-import com.sp.mm.folder.RobotoBoldTextView;
 
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatSpinner;
 import android.widget.Spinner;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
 import butterknife.Unbinder;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 
 
 public class Add extends AppCompatActivity {
@@ -90,6 +67,8 @@ public class Add extends AppCompatActivity {
     FirebaseAuth fAuth;
     String userID;
     String medicationID;
+
+    List<String> tags;
 
 
     Spinner spinnerDropDownView;
@@ -167,7 +146,7 @@ public class Add extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                Toast.makeText(Add.this, spinnerDropDownView.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(Add.this, spinnerDropDownView.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -189,25 +168,50 @@ public class Add extends AppCompatActivity {
                 userID = fAuth.getCurrentUser().getUid();
                 medicationID = fAuth.getCurrentUser().getUid();
 
+                //Arrays.asList(yourArray);
                 //int checkBoxCounter = 0;
 
-                StringBuffer result = new StringBuffer();
-                result.append("Monday: ").append(Monday.isChecked());
-                result.append("\n");
-                result.append("Tuesday: ").append(Tuesday.isChecked());
-                result.append("\n");
-                result.append("Wednesday: ").append(Wednesday.isChecked());
-                result.append("\n");
-                result.append("Thursday: ").append(Thursday.isChecked());
-                result.append("\n");
-                result.append("Friday: ").append(Friday.isChecked());
-                result.append("\n");
-                result.append("Saturday: ").append(Saturday.isChecked());
-                result.append("\n");
-                result.append("Sunday: ").append(Sunday.isChecked());
+                /*List<String> list = new ArrayList<String>();
 
-                Toast.makeText(Add.this, result.toString(),
-                        Toast.LENGTH_LONG).show();
+
+                list.add("Monday: " + Monday.isChecked()+ "\n" + " Tuesday: " + Tuesday.isChecked() + "\n"
+                        + "Wednesday: " + Wednesday.isChecked() + "\n" + " Thursday: " + Thursday.isChecked() + "\n"
+                        + "Friday: " + Friday.isChecked() + "\n" + " Saturday: " + Saturday.isChecked() + "\n"
+                        + "Sunday: " + Sunday.isChecked());*/
+
+
+                StringBuffer day1 = new StringBuffer();
+                StringBuffer day2 = new StringBuffer();
+                StringBuffer day3 = new StringBuffer();
+                StringBuffer day4 = new StringBuffer();
+                StringBuffer day5 = new StringBuffer();
+                StringBuffer day6 = new StringBuffer();
+                StringBuffer day7 = new StringBuffer();
+
+
+
+
+
+
+
+
+
+                day1.append("Monday: ").append(Monday.isChecked());
+
+                day2.append("Tuesday: ").append(Tuesday.isChecked());
+
+                day3.append("Wednesday: ").append(Wednesday.isChecked());
+
+                day4.append("Thursday: ").append(Thursday.isChecked());
+
+                day5.append("Friday: ").append(Friday.isChecked());
+
+                day6.append("Saturday: ").append(Saturday.isChecked());
+
+                day7.append("Sunday: ").append(Sunday.isChecked());
+
+                //Toast.makeText(Add.this, day1.toString() + day2.toString() + day3.toString() + day4.toString()
+                        //+ day5.toString() + day6.toString() + day7.toString(), Toast.LENGTH_LONG).show();
 
                 FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
                 DocumentReference documentReference = rootRef
@@ -216,7 +220,15 @@ public class Add extends AppCompatActivity {
 
                 Map<String,Object> user = new HashMap<>();
                 user.put("Medication Name",medNameString);      //Add into firestore
-                user.put("Medication Days",result.toString());    //Add into firestore
+
+                user.put("Day 1 ",day1.toString());    //Add into firestore
+                user.put("Day 2 ",day2.toString());    //Add into firestore
+                user.put("Day 3 ",day3.toString());    //Add into firestore
+                user.put("Day 4 ",day4.toString());    //Add into firestore
+                user.put("Day 5 ",day5.toString());    //Add into firestore
+                user.put("Day 6 ",day6.toString());    //Add into firestore
+                user.put("Day 7 ",day7.toString());    //Add into firestore
+
                 user.put("Medication Time",medTimeString);    //Add into firestore
                 user.put("Medication Quantity",quantityString);    //Add into firestore
                 user.put("Medication Shape",spinnerDropDownView.getSelectedItem().toString());    //Add into firestore
@@ -392,6 +404,9 @@ public class Add extends AppCompatActivity {
     };*/
 
 
+    public void Note(List<String> tags){
+        this.tags = tags;
+    }
 
     public void ClickMenu(View view){
         //Open drawer
