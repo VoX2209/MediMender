@@ -1,5 +1,6 @@
 package com.sp.mm;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -19,6 +20,7 @@ import android.app.Activity;
 
 import android.content.Intent;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -170,15 +172,11 @@ public class Add extends AppCompatActivity {
 
                 //Arrays.asList(yourArray);
                 //int checkBoxCounter = 0;
-
                 /*List<String> list = new ArrayList<String>();
-
-
                 list.add("Monday: " + Monday.isChecked()+ "\n" + " Tuesday: " + Tuesday.isChecked() + "\n"
                         + "Wednesday: " + Wednesday.isChecked() + "\n" + " Thursday: " + Thursday.isChecked() + "\n"
                         + "Friday: " + Friday.isChecked() + "\n" + " Saturday: " + Saturday.isChecked() + "\n"
                         + "Sunday: " + Sunday.isChecked());*/
-
 
                 StringBuffer day1 = new StringBuffer();
                 StringBuffer day2 = new StringBuffer();
@@ -188,32 +186,44 @@ public class Add extends AppCompatActivity {
                 StringBuffer day6 = new StringBuffer();
                 StringBuffer day7 = new StringBuffer();
 
-
-
-
-
-
-
-
-
                 day1.append("Monday: ").append(Monday.isChecked());
-
                 day2.append("Tuesday: ").append(Tuesday.isChecked());
-
                 day3.append("Wednesday: ").append(Wednesday.isChecked());
-
                 day4.append("Thursday: ").append(Thursday.isChecked());
-
                 day5.append("Friday: ").append(Friday.isChecked());
-
                 day6.append("Saturday: ").append(Saturday.isChecked());
-
                 day7.append("Sunday: ").append(Sunday.isChecked());
 
-                //Toast.makeText(Add.this, day1.toString() + day2.toString() + day3.toString() + day4.toString()
-                        //+ day5.toString() + day6.toString() + day7.toString(), Toast.LENGTH_LONG).show();
+                Map<String, Object> data = new HashMap<>();
+                data.put("Day 1 ",day1.toString());    //Add into firestore
+                data.put("Day 2 ",day2.toString());    //Add into firestore
+                data.put("Day 3 ",day3.toString());    //Add into firestore
+                data.put("Day 4 ",day4.toString());    //Add into firestore
+                data.put("Day 5 ",day5.toString());    //Add into firestore
+                data.put("Day 6 ",day6.toString());    //Add into firestore
+                data.put("Day 7 ",day7.toString());    //Add into firestore
 
-                FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                data.put("Medication Name",medNameString);    //Add into firestore
+                data.put("Medication Time",medTimeString);    //Add into firestore
+                data.put("Medication Quantity",quantityString);    //Add into firestore
+                data.put("Medication Shape",spinnerDropDownView.getSelectedItem().toString());
+
+                fstore.collection("users").document(userID).collection("medications")
+                        .add(data)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                            }
+                        });
+
+                /*FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
                 DocumentReference documentReference = rootRef
                         .collection("users").document(userID)
                         .collection("medications").document(medicationID);
@@ -237,7 +247,14 @@ public class Add extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Log.d("TAG","onSuccess: user Profile is created for"+ userID);
                     }
-                });
+                });*/
+
+                Intent add;
+                add = new Intent(Add.this, Main.class);
+                startActivity(add);
+                finish();
+
+
 
             }
 
