@@ -109,7 +109,7 @@ public class Registration extends AppCompatActivity {
                             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
                             DocumentReference documentReference = rootRef
                                     .collection("users").document(userID)
-                                    .collection("profile").document(profileID);
+                                    .collection("profile").document("profileID");
 
 
                             Map<String,Object> user = new HashMap<>();

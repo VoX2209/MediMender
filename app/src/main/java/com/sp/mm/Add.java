@@ -186,22 +186,22 @@ public class Add extends AppCompatActivity {
                 StringBuffer day6 = new StringBuffer();
                 StringBuffer day7 = new StringBuffer();
 
-                day1.append("Monday: ").append(Monday.isChecked());
-                day2.append("Tuesday: ").append(Tuesday.isChecked());
-                day3.append("Wednesday: ").append(Wednesday.isChecked());
-                day4.append("Thursday: ").append(Thursday.isChecked());
-                day5.append("Friday: ").append(Friday.isChecked());
-                day6.append("Saturday: ").append(Saturday.isChecked());
-                day7.append("Sunday: ").append(Sunday.isChecked());
+                day1.append(Monday.isChecked());
+                day2.append(Tuesday.isChecked());
+                day3.append(Wednesday.isChecked());
+                day4.append(Thursday.isChecked());
+                day5.append(Friday.isChecked());
+                day6.append(Saturday.isChecked());
+                day7.append(Sunday.isChecked());
 
                 Map<String, Object> data = new HashMap<>();
-                data.put("Day 1 ",day1.toString());    //Add into firestore
-                data.put("Day 2 ",day2.toString());    //Add into firestore
-                data.put("Day 3 ",day3.toString());    //Add into firestore
-                data.put("Day 4 ",day4.toString());    //Add into firestore
-                data.put("Day 5 ",day5.toString());    //Add into firestore
-                data.put("Day 6 ",day6.toString());    //Add into firestore
-                data.put("Day 7 ",day7.toString());    //Add into firestore
+                data.put("1Monday",day1.toString());    //Add into firestore
+                data.put("2Tuesday",day2.toString());    //Add into firestore
+                data.put("3Wednesday",day3.toString());    //Add into firestore
+                data.put("4Thursday",day4.toString());    //Add into firestore
+                data.put("5Friday",day5.toString());    //Add into firestore
+                data.put("6Saturday",day6.toString());    //Add into firestore
+                data.put("7Sunday",day7.toString());    //Add into firestore
 
                 data.put("Medication Name",medNameString);    //Add into firestore
                 data.put("Medication Time",medTimeString);    //Add into firestore

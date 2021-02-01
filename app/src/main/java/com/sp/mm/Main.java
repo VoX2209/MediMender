@@ -1,5 +1,6 @@
 package com.sp.mm;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -9,23 +10,45 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class Main extends AppCompatActivity {
 
     //Initialize variable
+
     DrawerLayout drawerLayout;
     FirebaseAuth fAuth;
     FirebaseFirestore fstore;
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
+    String userID, profileID;
+
+    TextView medicineName, medicineTime, medicineShape, medicineDay, medicineQuantity;
+    TextView Name, Email, Password;
+
+    List<String> tags;
+    private static final String TAG = "TAG" ;
 
 
 
@@ -38,12 +61,41 @@ public class Main extends AppCompatActivity {
         fstore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        userID = fAuth.getCurrentUser().getUid();
+
+
+
+        medicineName = findViewById(R.id.medName);
+        medicineQuantity = findViewById(R.id.medQuantity);
+        medicineTime = findViewById(R.id.medTime);
+        medicineDay = findViewById(R.id.medDay);
+        medicineShape = findViewById(R.id.medShape);
+
+        Name = findViewById(R.id.userName);
+        Email = findViewById(R.id.userEmail);
+        Password = findViewById(R.id.userPassword);
+
+        DocumentReference documentReference = fstore.collection("users").document(userID).collection("profile").document("profileID");
+        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                Name.setText(documentSnapshot.getString("Name"));
+                Email.setText(documentSnapshot.getString("Email"));
+                Password.setText(documentSnapshot.getString("Password"));
+
+            }
+        });
+
+
 
 
 
 
         //Assign Variable
         drawerLayout = findViewById(R.id.drawer_layout);
+    }
+    public void Note(List<String> tags){
+        this.tags = tags;
     }
 
     public void ClickMenu(View view){
