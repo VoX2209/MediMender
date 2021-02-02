@@ -103,14 +103,12 @@ public class Registration extends AppCompatActivity {
                             Toast.makeText(Registration.this, "Registration Successful!", Toast.LENGTH_LONG).show();
 
                             userID = fAuth.getCurrentUser().getUid();
-                            profileID = fAuth.getCurrentUser().getUid();
 
                             //DocumentReference documentReference = fstore.collection("users").document("userID").collection("profile").document(profileID);
                             FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
                             DocumentReference documentReference = rootRef
                                     .collection("users").document(userID)
                                     .collection("profile").document("profileID");
-
 
                             Map<String,Object> user = new HashMap<>();
                             user.put("Name",name);      //Add into firestore

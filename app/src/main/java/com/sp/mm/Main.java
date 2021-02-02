@@ -45,7 +45,7 @@ public class Main extends AppCompatActivity {
     String userID, profileID;
 
     TextView medicineName, medicineTime, medicineShape, medicineDay, medicineQuantity;
-    TextView Name, Email, Password;
+
 
     List<String> tags;
     private static final String TAG = "TAG" ;
@@ -63,33 +63,11 @@ public class Main extends AppCompatActivity {
         firebaseUser = firebaseAuth.getCurrentUser();
         userID = fAuth.getCurrentUser().getUid();
 
-
-
         medicineName = findViewById(R.id.medName);
         medicineQuantity = findViewById(R.id.medQuantity);
         medicineTime = findViewById(R.id.medTime);
         medicineDay = findViewById(R.id.medDay);
         medicineShape = findViewById(R.id.medShape);
-
-        Name = findViewById(R.id.userName);
-        Email = findViewById(R.id.userEmail);
-        Password = findViewById(R.id.userPassword);
-
-        DocumentReference documentReference = fstore.collection("users").document(userID).collection("profile").document("profileID");
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                Name.setText(documentSnapshot.getString("Name"));
-                Email.setText(documentSnapshot.getString("Email"));
-                Password.setText(documentSnapshot.getString("Password"));
-
-            }
-        });
-
-
-
-
-
 
         //Assign Variable
         drawerLayout = findViewById(R.id.drawer_layout);

@@ -14,11 +14,11 @@
         android:src="@drawable/circle" />
 
     <TextView
-        android:id="@+id/userName"
+        android:id="@+id/userName1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/aclonica"
-        android:text="User's Name( Edit in future )"
+        android:text="username"
         android:textAlignment="center"
         android:textColor="#636363"
         android:textSize="20sp"

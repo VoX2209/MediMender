@@ -1,5 +1,6 @@
 package com.sp.mm;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -8,21 +9,126 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import javax.annotation.Nullable;
 
 public class Settings extends AppCompatActivity {
     //Initialize variable
     DrawerLayout drawerLayout;
+    FirebaseAuth fAuth;
+    FirebaseFirestore fstore;
+    FirebaseUser firebaseUser;
+    FirebaseAuth firebaseAuth;
+    String userID, profileID;
+    Button btnUpdate;
+
+    TextView Name, Email, Password;
+
+    private static final String TAG = "TAG" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
 
+        fAuth = FirebaseAuth.getInstance();
+        fstore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        userID = fAuth.getCurrentUser().getUid();
+
+
         //Assign variable
         drawerLayout= findViewById(R.id.drawer_layout);
+        Name = findViewById(R.id.userName1);
+        Name = findViewById(R.id.userName);
+        Email = findViewById(R.id.userEmail);
+        Password = findViewById(R.id.userPassword);
+        btnUpdate = findViewById(R.id.btnUpdate);
+
+
+        DocumentReference documentReference = fstore.collection("users").document(userID).collection("profile").document("profileID");
+        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                    if(fAuth.getCurrentUser() != null) {
+                        Name.setText(documentSnapshot.getString("Name"));
+                        Email.setText(documentSnapshot.getString("Email"));
+                        Password.setText(documentSnapshot.getString("Password"));
+                    }
+            }
+        });
+
+        /*btnUpdate.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+               final EditText resetPassword = new EditText(v.getContext());
+               final AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
+
+               passwordResetDialog.setTitle("Reset password?");
+               passwordResetDialog.setMessage("Enter a new password > 6 Characters long");
+               passwordResetDialog.setView(resetPassword);
+
+               passwordResetDialog.setPositiveButton("Yes",onClick(dialog, which){
+                   String newPassword = resetPassword.getText().toString();
+                   user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>(){
+                       @Override
+                       public void onSuccess(Void avoid) {
+                           Toast.makeText(Settings.this,"Password resetted",Toast.LENGTH_LONG).show();
+                       }
+                   }).addOnFailureListener(new OnFailureListener(){
+                       @Override
+                       public void  onFailure(@NonNull Exception e){
+                           Toast.makeText(Settings.this,"Password not resetted", Toast.LENGTH_LONG).show();
+                       }
+                   });
+
+                }
+            }
+        });
+
+        /*btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                DocumentReference rootRef = fstore.collection("users").document(userID)
+                        .collection("profile").document("profileID");
+
+                rootRef
+                        .update("Name", )
+
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "DocumentSnapshot successfully updated!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error updating document", e);
+                            }
+                        });
+            }
+        });*/
     }
 
     public void ClickMenu(View view){
