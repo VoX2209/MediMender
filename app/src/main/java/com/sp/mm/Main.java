@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,7 +45,7 @@ public class Main extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     String userID, profileID;
 
-    TextView medicineName, medicineTime, medicineShape, medicineDay, medicineQuantity;
+    TextView medicineName, medicineHour, medicineMin, medicineShape, medicineDay, medicineQuantity, monday, tuesday, wednesday, thursday, friday, saturday, sunday;
 
 
     List<String> tags;
@@ -65,12 +66,44 @@ public class Main extends AppCompatActivity {
 
         medicineName = findViewById(R.id.medName);
         medicineQuantity = findViewById(R.id.medQuantity);
-        medicineTime = findViewById(R.id.medTime);
-        medicineDay = findViewById(R.id.medDay);
+        medicineHour = findViewById(R.id.medHour);
+        medicineMin = findViewById(R.id.medMinute);
         medicineShape = findViewById(R.id.medShape);
+
+        monday = findViewById(R.id.medMon);
+        tuesday = findViewById(R.id.medTue);
+        wednesday = findViewById(R.id.medWed);
+        thursday = findViewById(R.id.medThu);
+        friday = findViewById(R.id.medFri);
+        saturday = findViewById(R.id.medSat);
+        sunday = findViewById(R.id.medSun);
 
         //Assign Variable
         drawerLayout = findViewById(R.id.drawer_layout);
+
+        DocumentReference documentReference = fstore.collection("users").document(userID).collection("medications").document("med1");
+        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                if(fAuth.getCurrentUser() != null) {
+                    medicineName.setText(documentSnapshot.getString("Medication Name"));
+                    medicineQuantity.setText(documentSnapshot.getString("Medication Quantity"));
+                    //medicineHour.setText(documentSnapshot.get("Medication Hour"));
+                    //medicineMin.setText(documentSnapshot.getString("Medication Minute"));
+                    medicineShape.setText(documentSnapshot.getString("Medication Shape"));
+
+                    monday.setText(documentSnapshot.getString("1Monday"));
+                    tuesday.setText(documentSnapshot.getString("2Tuesday"));
+                    wednesday.setText(documentSnapshot.getString("3Wednesday"));
+                    thursday.setText(documentSnapshot.getString("4Thursday"));
+                    friday.setText(documentSnapshot.getString("5Friday"));
+                    saturday.setText(documentSnapshot.getString("6Saturday"));
+                    sunday.setText(documentSnapshot.getString("7Sunday"));
+
+                }
+            }
+        });
     }
     public void Note(List<String> tags){
         this.tags = tags;

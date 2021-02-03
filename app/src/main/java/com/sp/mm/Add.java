@@ -4,8 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -28,6 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.sp.mm.folder.DayViewCheckBox;
 
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.fragment.app.DialogFragment;
+
 import android.widget.Spinner;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -37,13 +42,16 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.Unbinder;
@@ -71,7 +79,6 @@ public class Add extends AppCompatActivity {
     String medicationID;
 
     List<String> tags;
-
 
     Spinner spinnerDropDownView;
     String[] spinnerValueHoldValue = {"adhesive(s)", "capsule(s)", "cachet(s)", "cream(s)", "dragee(s)", "emulsion(s)", "pack(s)", "gel(s)"};
@@ -170,6 +177,8 @@ public class Add extends AppCompatActivity {
                 userID = fAuth.getCurrentUser().getUid();
                 medicationID = fAuth.getCurrentUser().getUid();
 
+                int i = 0;
+
                 //Arrays.asList(yourArray);
                 //int checkBoxCounter = 0;
                 /*List<String> list = new ArrayList<String>();
@@ -195,99 +204,84 @@ public class Add extends AppCompatActivity {
                 day7.append(Sunday.isChecked());
 
                 Map<String, Object> data = new HashMap<>();
-                data.put("1Monday",day1.toString());    //Add into firestore
-                data.put("2Tuesday",day2.toString());    //Add into firestore
-                data.put("3Wednesday",day3.toString());    //Add into firestore
-                data.put("4Thursday",day4.toString());    //Add into firestore
-                data.put("5Friday",day5.toString());    //Add into firestore
-                data.put("6Saturday",day6.toString());    //Add into firestore
-                data.put("7Sunday",day7.toString());    //Add into firestore
+                data.put("1Monday", day1.toString());    //Add into firestore
+                data.put("2Tuesday", day2.toString());    //Add into firestore
+                data.put("3Wednesday", day3.toString());    //Add into firestore
+                data.put("4Thursday", day4.toString());    //Add into firestore
+                data.put("5Friday", day5.toString());    //Add into firestore
+                data.put("6Saturday", day6.toString());    //Add into firestore
+                data.put("7Sunday", day7.toString());    //Add into firestore
 
-                data.put("Medication Name",medNameString);    //Add into firestore
-                data.put("Medication Time",medTimeString);    //Add into firestore
-                data.put("Medication Quantity",quantityString);    //Add into firestore
-                data.put("Medication Shape",spinnerDropDownView.getSelectedItem().toString());
+                data.put("Medication Name", medNameString);    //Add into firestore
+                data.put("Medication Hour", hour);    //Add into firestore
+                data.put("Medication Minute", minute);    //Add into firestore
+                data.put("Medication Time", medTimeString);
+                data.put("Medication Quantity", quantityString);    //Add into firestore
+                data.put("Medication Shape", spinnerDropDownView.getSelectedItem().toString());
 
-                fstore.collection("users").document(userID).collection("medications")
-                        .add(data)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                fstore.collection("users").document(userID).collection("medications").document("med1")
+                        .set(data)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "DocumentSnapshot successfully written!");
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error adding document", e);
+                                Log.w(TAG, "Error writing document", e);
                             }
                         });
 
-                /*FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-                DocumentReference documentReference = rootRef
-                        .collection("users").document(userID)
-                        .collection("medications").document(medicationID);
 
-                Map<String,Object> user = new HashMap<>();
-                user.put("Medication Name",medNameString);      //Add into firestore
-
-                user.put("Day 1 ",day1.toString());    //Add into firestore
-                user.put("Day 2 ",day2.toString());    //Add into firestore
-                user.put("Day 3 ",day3.toString());    //Add into firestore
-                user.put("Day 4 ",day4.toString());    //Add into firestore
-                user.put("Day 5 ",day5.toString());    //Add into firestore
-                user.put("Day 6 ",day6.toString());    //Add into firestore
-                user.put("Day 7 ",day7.toString());    //Add into firestore
-
-                user.put("Medication Time",medTimeString);    //Add into firestore
-                user.put("Medication Quantity",quantityString);    //Add into firestore
-                user.put("Medication Shape",spinnerDropDownView.getSelectedItem().toString());    //Add into firestore
-                documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("TAG","onSuccess: user Profile is created for"+ userID);
-                    }
-                });*/
 
                 Intent add;
                 add = new Intent(Add.this, Main.class);
                 startActivity(add);
                 finish();
 
-
-
             }
-
-
         });
 
         tvMedicineTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Initialize time picker dialog
+
                 TimePickerDialog timePickerDialog = new TimePickerDialog(
                         Add.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                //Initialize hour and minute
-                                hour = hourOfDay;
-                                minute = minute;
-                                //Store hour and minute in string
-                                String time = hour + ":" + minute;
-                                //Initialize the 24hr time format
-                                SimpleDateFormat f24hours = new SimpleDateFormat("HH:mm");
-                                try {
-                                    Date date = f24hours.parse(time);
-                                    //Initialize 12 hours
-                                    SimpleDateFormat f12Hours = new SimpleDateFormat("hh:mm aa");
-                                    //Set select time on text view
-                                    tvMedicineTime.setText(f12Hours.format(date));
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
+                               Calendar c = Calendar.getInstance();
+                               c.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                               c.set(Calendar.MINUTE,minutes);
+                               c.set(Calendar.SECOND,0);
+
+                               updateTimeText(c);
+                               startAlarm(c);
+                            }
+
+                            private void updateTimeText(Calendar c) {
+                                String timeText = "Alarm set for: ";
+                                timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c);
+
+                                tvMedicineTime.setText(timeText);
+                            }
+
+                            private void startAlarm(Calendar c) {
+                                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                Intent intent = new Intent(this, AlertReceiver.class);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+                                if (c.before(Calendar.getInstance())) {
+                                    c.add(Calendar.DATE, 1);
                                 }
-                            }}, 12, 0, false
+                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+                            }
+
+                        }
                 );
                 //Set transparent background
                 timePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

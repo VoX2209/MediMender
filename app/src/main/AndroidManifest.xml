@@ -24,6 +24,8 @@
         <activity android:name=".Login" />
         <activity android:name=".Main" />
 
+        <receiver android:name=".AlertReceiver" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

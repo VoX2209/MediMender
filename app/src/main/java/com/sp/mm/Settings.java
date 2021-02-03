@@ -36,7 +36,7 @@ public class Settings extends AppCompatActivity {
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
     String userID, profileID;
-    Button btnUpdate;
+
 
     TextView Name, Email, Password;
 
@@ -60,7 +60,7 @@ public class Settings extends AppCompatActivity {
         Name = findViewById(R.id.userName);
         Email = findViewById(R.id.userEmail);
         Password = findViewById(R.id.userPassword);
-        btnUpdate = findViewById(R.id.btnUpdate);
+
 
 
         DocumentReference documentReference = fstore.collection("users").document(userID).collection("profile").document("profileID");
@@ -76,33 +76,6 @@ public class Settings extends AppCompatActivity {
             }
         });
 
-        /*btnUpdate.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-               final EditText resetPassword = new EditText(v.getContext());
-               final AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
-
-               passwordResetDialog.setTitle("Reset password?");
-               passwordResetDialog.setMessage("Enter a new password > 6 Characters long");
-               passwordResetDialog.setView(resetPassword);
-
-               passwordResetDialog.setPositiveButton("Yes",onClick(dialog, which){
-                   String newPassword = resetPassword.getText().toString();
-                   user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>(){
-                       @Override
-                       public void onSuccess(Void avoid) {
-                           Toast.makeText(Settings.this,"Password resetted",Toast.LENGTH_LONG).show();
-                       }
-                   }).addOnFailureListener(new OnFailureListener(){
-                       @Override
-                       public void  onFailure(@NonNull Exception e){
-                           Toast.makeText(Settings.this,"Password not resetted", Toast.LENGTH_LONG).show();
-                       }
-                   });
-
-                }
-            }
-        });
 
         /*btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
