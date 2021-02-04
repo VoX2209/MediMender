@@ -6,7 +6,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +35,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -44,8 +55,11 @@ public class Main extends AppCompatActivity {
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
     String userID, profileID;
+    ImageView button;
 
-    TextView medicineName, medicineHour, medicineMin, medicineShape, medicineDay, medicineQuantity, monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+    TextView medicineName, medicineShape, medicineQuantity, monday, tuesday, wednesday, thursday, friday, saturday, sunday, medicineTime;
+    TextView medicineHour, medicineMin;
+
 
 
     List<String> tags;
@@ -58,6 +72,7 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+
         fAuth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -69,14 +84,17 @@ public class Main extends AppCompatActivity {
         medicineHour = findViewById(R.id.medHour);
         medicineMin = findViewById(R.id.medMinute);
         medicineShape = findViewById(R.id.medShape);
+        medicineTime = findViewById(R.id.medTime);
 
-        monday = findViewById(R.id.medMon);
+
+
+        /*monday = findViewById(R.id.medMon);
         tuesday = findViewById(R.id.medTue);
         wednesday = findViewById(R.id.medWed);
         thursday = findViewById(R.id.medThu);
         friday = findViewById(R.id.medFri);
         saturday = findViewById(R.id.medSat);
-        sunday = findViewById(R.id.medSun);
+        sunday = findViewById(R.id.medSun);*/
 
         //Assign Variable
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -86,25 +104,74 @@ public class Main extends AppCompatActivity {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
-                if(fAuth.getCurrentUser() != null) {
+                if (fAuth.getCurrentUser() != null) {
                     medicineName.setText(documentSnapshot.getString("Medication Name"));
                     medicineQuantity.setText(documentSnapshot.getString("Medication Quantity"));
-                    //medicineHour.setText(documentSnapshot.get("Medication Hour"));
-                    //medicineMin.setText(documentSnapshot.getString("Medication Minute"));
+                    medicineHour.setText(documentSnapshot.getString("Medication Hour"));
+                    medicineMin.setText(documentSnapshot.getString("Medication Minute"));
                     medicineShape.setText(documentSnapshot.getString("Medication Shape"));
+                    medicineTime.setText(documentSnapshot.getString("Medication Time"));
 
-                    monday.setText(documentSnapshot.getString("1Monday"));
+
+
+                    /*monday.setText(documentSnapshot.getString("1Monday"));
                     tuesday.setText(documentSnapshot.getString("2Tuesday"));
                     wednesday.setText(documentSnapshot.getString("3Wednesday"));
                     thursday.setText(documentSnapshot.getString("4Thursday"));
                     friday.setText(documentSnapshot.getString("5Friday"));
                     saturday.setText(documentSnapshot.getString("6Saturday"));
-                    sunday.setText(documentSnapshot.getString("7Sunday"));
+                    sunday.setText(documentSnapshot.getString("7Sunday"));*/
 
                 }
             }
         });
+
+        ImageView buttonCancelAlarm = findViewById(R.id.button_cancel);
+        buttonCancelAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelAlarm();
+            }
+        });
     }
+
+    private void cancelAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        alarmManager.cancel(pendingIntent);
+        Toast.makeText(Main.this,"Cancelled", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void onTimeSet (View view){
+        String x = medicineHour.getText().toString();
+        String y = medicineMin.getText().toString();
+        int Hour =Integer.parseInt(x);
+        int Minute =Integer.parseInt(y);
+
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, Hour);
+        c.set(Calendar.MINUTE, Minute);
+        c.set(Calendar.SECOND, 0);
+        updateTimeText(c);
+        startAlarm(c);
+    }
+
+    private void updateTimeText(Calendar c) {
+        Toast.makeText(Main.this,"Updated", Toast.LENGTH_SHORT).show();
+    }
+
+    private void startAlarm(Calendar c) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        if (c.before(Calendar.getInstance())) {
+            c.add(Calendar.DATE, 1);
+        }
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+    }
+
     public void Note(List<String> tags){
         this.tags = tags;
     }

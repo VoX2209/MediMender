@@ -173,19 +173,11 @@ public class Add extends AppCompatActivity {
                 String medNameString = medName.getText().toString();
                 String medTimeString = tvMedicineTime.getText().toString();
                 String quantityString = doseQuantity.getText().toString();
+                String hourString = String.valueOf(hour);
+                String minString = String.valueOf(minute);
 
                 userID = fAuth.getCurrentUser().getUid();
                 medicationID = fAuth.getCurrentUser().getUid();
-
-                int i = 0;
-
-                //Arrays.asList(yourArray);
-                //int checkBoxCounter = 0;
-                /*List<String> list = new ArrayList<String>();
-                list.add("Monday: " + Monday.isChecked()+ "\n" + " Tuesday: " + Tuesday.isChecked() + "\n"
-                        + "Wednesday: " + Wednesday.isChecked() + "\n" + " Thursday: " + Thursday.isChecked() + "\n"
-                        + "Friday: " + Friday.isChecked() + "\n" + " Saturday: " + Saturday.isChecked() + "\n"
-                        + "Sunday: " + Sunday.isChecked());*/
 
                 StringBuffer day1 = new StringBuffer();
                 StringBuffer day2 = new StringBuffer();
@@ -213,8 +205,8 @@ public class Add extends AppCompatActivity {
                 data.put("7Sunday", day7.toString());    //Add into firestore
 
                 data.put("Medication Name", medNameString);    //Add into firestore
-                data.put("Medication Hour", hour);    //Add into firestore
-                data.put("Medication Minute", minute);    //Add into firestore
+                data.put("Medication Hour", hourString);    //Add into firestore
+                data.put("Medication Minute", minString);    //Add into firestore
                 data.put("Medication Time", medTimeString);
                 data.put("Medication Quantity", quantityString);    //Add into firestore
                 data.put("Medication Shape", spinnerDropDownView.getSelectedItem().toString());
@@ -234,13 +226,10 @@ public class Add extends AppCompatActivity {
                             }
                         });
 
-
-
                 Intent add;
                 add = new Intent(Add.this, Main.class);
                 startActivity(add);
                 finish();
-
             }
         });
 
@@ -248,40 +237,29 @@ public class Add extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Initialize time picker dialog
-
                 TimePickerDialog timePickerDialog = new TimePickerDialog(
                         Add.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
-                               Calendar c = Calendar.getInstance();
-                               c.set(Calendar.HOUR_OF_DAY,hourOfDay);
-                               c.set(Calendar.MINUTE,minutes);
-                               c.set(Calendar.SECOND,0);
-
-                               updateTimeText(c);
-                               startAlarm(c);
-                            }
-
-                            private void updateTimeText(Calendar c) {
-                                String timeText = "Alarm set for: ";
-                                timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c);
-
-                                tvMedicineTime.setText(timeText);
-                            }
-
-                            private void startAlarm(Calendar c) {
-                                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                Intent intent = new Intent(this, AlertReceiver.class);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-                                if (c.before(Calendar.getInstance())) {
-                                    c.add(Calendar.DATE, 1);
+                                //Initialize hour and minute
+                                hour = hourOfDay;
+                                minute = minutes;
+                                //Store hour and minute in string
+                                String time = hour + ":" + minute;
+                                //Initialize the 24hr time format
+                                SimpleDateFormat f24hours = new SimpleDateFormat("HH:mm");
+                                try {
+                                    Date date = f24hours.parse(time);
+                                    //Initialize 12 hours
+                                    SimpleDateFormat f12Hours = new SimpleDateFormat("hh:mm aa");
+                                    //Set select time on text view
+                                    tvMedicineTime.setText(f12Hours.format(date));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
                                 }
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-                            }
-
-                        }
+                            }}, 12, 0, true
                 );
                 //Set transparent background
                 timePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
