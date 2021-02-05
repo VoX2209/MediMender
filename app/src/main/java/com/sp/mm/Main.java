@@ -1,6 +1,5 @@
 package com.sp.mm;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -9,12 +8,10 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,9 +19,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -32,13 +26,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 
 import java.util.List;
@@ -55,7 +45,7 @@ public class Main extends AppCompatActivity {
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
     String userID, profileID;
-    ImageView button;
+    ImageView pill, tick, cross;
 
     TextView medicineName, medicineShape, medicineQuantity, monday, tuesday, wednesday, thursday, friday, saturday, sunday, medicineTime;
     TextView medicineHour, medicineMin;
@@ -72,7 +62,6 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-
         fAuth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -85,8 +74,9 @@ public class Main extends AppCompatActivity {
         medicineMin = findViewById(R.id.medMinute);
         medicineShape = findViewById(R.id.medShape);
         medicineTime = findViewById(R.id.medTime);
-
-
+        pill = findViewById(R.id.iv_icon);
+        tick = findViewById(R.id.tick);
+        cross = findViewById(R.id.cross);
 
         /*monday = findViewById(R.id.medMon);
         tuesday = findViewById(R.id.medTue);
@@ -112,27 +102,26 @@ public class Main extends AppCompatActivity {
                     medicineShape.setText(documentSnapshot.getString("Medication Shape"));
                     medicineTime.setText(documentSnapshot.getString("Medication Time"));
 
-
-
-                    /*monday.setText(documentSnapshot.getString("1Monday"));
-                    tuesday.setText(documentSnapshot.getString("2Tuesday"));
+                    //monday.setText(documentSnapshot.getString("1Monday"));
+                    /*tuesday.setText(documentSnapshot.getString("2Tuesday"));
                     wednesday.setText(documentSnapshot.getString("3Wednesday"));
                     thursday.setText(documentSnapshot.getString("4Thursday"));
                     friday.setText(documentSnapshot.getString("5Friday"));
                     saturday.setText(documentSnapshot.getString("6Saturday"));
                     sunday.setText(documentSnapshot.getString("7Sunday"));*/
-
                 }
             }
         });
 
-        ImageView buttonCancelAlarm = findViewById(R.id.button_cancel);
+        ImageView buttonCancelAlarm = findViewById(R.id.tick);
         buttonCancelAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cancelAlarm();
             }
         });
+
+
     }
 
     private void cancelAlarm() {
@@ -140,7 +129,7 @@ public class Main extends AppCompatActivity {
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
         alarmManager.cancel(pendingIntent);
-        Toast.makeText(Main.this,"Cancelled", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Main.this,"Alarm off", Toast.LENGTH_SHORT).show();
     }
 
 

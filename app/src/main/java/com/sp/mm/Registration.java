@@ -67,7 +67,7 @@ public class Registration extends AppCompatActivity {
 
         //Keep user logged in
         if(fAuth.getCurrentUser() != null ){
-            startActivity(new Intent (Registration.this,Main.class));
+            startActivity(new Intent (Registration.this, Add.class));
             finish();
         }
 
@@ -122,7 +122,7 @@ public class Registration extends AppCompatActivity {
                             });
 
                             Intent add;
-                            add = new Intent(Registration.this, Main.class);
+                            add = new Intent(Registration.this, Add.class);
                             startActivity(add);
                             finish();
 

@@ -143,22 +143,20 @@
 
 
                                 <ImageView
-                                    android:id="@+id/iv_ignore_med"
+                                    android:id="@+id/tick"
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:contentDescription="@null"
-                                    android:src="@drawable/tick"
-                                    android:visibility="visible" />
+                                    android:src="@drawable/tick" />
 
                                 <ImageView
-                                    android:id="@+id/button_cancel"
+                                    android:id="@+id/cross"
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:layout_marginStart="8dp"
                                     android:layout_marginLeft="8dp"
                                     android:background="@drawable/cross"
-                                    android:contentDescription="@null"
-                                    android:visibility="visible" />
+                                    android:contentDescription="@null" />
 
                             </LinearLayout>
                         </RelativeLayout>
