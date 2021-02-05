@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.app.TimePickerDialog;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -35,7 +37,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class Main extends AppCompatActivity {
+public class Main extends AppCompatActivity  implements TimePickerDialog.OnTimeSetListener {
 
     //Initialize variable
 
@@ -120,8 +122,6 @@ public class Main extends AppCompatActivity {
                 cancelAlarm();
             }
         });
-
-
     }
 
     private void cancelAlarm() {
@@ -133,7 +133,7 @@ public class Main extends AppCompatActivity {
     }
 
 
-    private void onTimeSet (View view){
+    /*private void onTimeSet (View view){
         String x = medicineHour.getText().toString();
         String y = medicineMin.getText().toString();
         int Hour =Integer.parseInt(x);
@@ -145,20 +145,34 @@ public class Main extends AppCompatActivity {
         c.set(Calendar.SECOND, 0);
         updateTimeText(c);
         startAlarm(c);
-    }
+    }*/
 
-    private void updateTimeText(Calendar c) {
-        Toast.makeText(Main.this,"Updated", Toast.LENGTH_SHORT).show();
-    }
+
 
     private void startAlarm(Calendar c) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        Intent intent = new Intent(Main.this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(Main.this, 1, intent, 0);
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
         }
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        String x = medicineHour.getText().toString();
+        String y = medicineMin.getText().toString();
+        int Hour =Integer.parseInt(x);
+        int Minute =Integer.parseInt(y);
+
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, Hour);
+        c.set(Calendar.MINUTE, Minute);
+        c.set(Calendar.SECOND, 0);
+        //updateTimeText(c);
+        startAlarm(c);
+
     }
 
     public void Note(List<String> tags){
@@ -280,6 +294,7 @@ public class Main extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
 }
