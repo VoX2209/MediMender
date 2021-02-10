@@ -55,12 +55,8 @@ public class Main extends AppCompatActivity{
     TextView medicineName, medicineShape, medicineQuantity, monday, tuesday, wednesday, thursday, friday, saturday, sunday, medicineTime;
     TextView medicineHour, medicineMin;
 
-
-
     List<String> tags;
     private static final String TAG = "TAG" ;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +80,9 @@ public class Main extends AppCompatActivity{
         tick = findViewById(R.id.tick);
         cross = findViewById(R.id.cross);
 
-        /*monday = findViewById(R.id.medMon);
-        tuesday = findViewById(R.id.medTue);
+
+        //monday = findViewById(R.id.medMon);
+        /*tuesday = findViewById(R.id.medTue);
         wednesday = findViewById(R.id.medWed);
         thursday = findViewById(R.id.medThu);
         friday = findViewById(R.id.medFri);
@@ -115,6 +112,32 @@ public class Main extends AppCompatActivity{
                     friday.setText(documentSnapshot.getString("5Friday"));
                     saturday.setText(documentSnapshot.getString("6Saturday"));
                     sunday.setText(documentSnapshot.getString("7Sunday"));*/
+
+
+                    int X = Integer.valueOf(medicineHour.getText().toString());
+                    int Xvalue = (int) X;
+                    int Y = Integer.valueOf(medicineMin.getText().toString());
+                    int Yvalue = (int) Y;
+
+
+                    Intent intent = new Intent(Main.this,ReminderBroadcast.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(Main.this,0,intent,0);
+
+                    AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+                    Calendar c = Calendar.getInstance();
+                    c.set(Calendar.HOUR_OF_DAY,Xvalue);
+                    c.set(Calendar.MINUTE,Yvalue);
+                    c.set(Calendar.SECOND, 0);
+
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+
+                    //Toast.makeText(Main.this,monday.getText(), Toast.LENGTH_LONG).show();
+
+
+                    //String value = medicineHour.getText().toString();
+                    //int desiredValue = Integer.parseInt(value);
+                    //Toast.makeText(Main.this,desiredValue, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -127,18 +150,6 @@ public class Main extends AppCompatActivity{
             }
         });*/
 
-
-            Intent intent = new Intent(Main.this,ReminderBroadcast.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(Main.this,0,intent,0);
-
-            AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.HOUR_OF_DAY, 9);
-            c.set(Calendar.MINUTE,31);
-            c.set(Calendar.SECOND, 0);
-
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
 
 
 

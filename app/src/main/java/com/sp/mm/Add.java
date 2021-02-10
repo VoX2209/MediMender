@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -146,6 +147,8 @@ public class Add extends AppCompatActivity {
 
 
 
+
+
         spinnerDropDownView =(Spinner)findViewById(R.id.spinner_dose_units);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(Add.this, android.R.layout.simple_list_item_1, spinnerValueHoldValue);
         spinnerDropDownView.setAdapter(adapter);
@@ -269,7 +272,9 @@ public class Add extends AppCompatActivity {
                 timePickerDialog.show();
             }
         });
-    }
+    } // END OF ONCREATE
+
+
 
     /*@OnClick({R.id.every_day, R.id.dv_monday, R.id.dv_tuesday, R.id.dv_wednesday,
             R.id.dv_thursday, R.id.dv_friday, R.id.dv_saturday, R.id.dv_sunday})
