@@ -7,10 +7,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +40,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class Main extends AppCompatActivity  implements TimePickerDialog.OnTimeSetListener {
+public class Main extends AppCompatActivity{
 
     //Initialize variable
 
@@ -63,6 +66,7 @@ public class Main extends AppCompatActivity  implements TimePickerDialog.OnTimeS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        createNotificationChannel();
 
         fAuth = FirebaseAuth.getInstance();
         fstore = FirebaseFirestore.getInstance();
@@ -115,22 +119,38 @@ public class Main extends AppCompatActivity  implements TimePickerDialog.OnTimeS
             }
         });
 
-        ImageView buttonCancelAlarm = findViewById(R.id.tick);
+        /*ImageView buttonCancelAlarm = findViewById(R.id.tick);
         buttonCancelAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cancelAlarm();
             }
-        });
+        });*/
+
+
+            Intent intent = new Intent(Main.this,ReminderBroadcast.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(Main.this,0,intent,0);
+
+            AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.HOUR_OF_DAY, 9);
+            c.set(Calendar.MINUTE,31);
+            c.set(Calendar.SECOND, 0);
+
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+
+
+
     }
 
-    private void cancelAlarm() {
+    /*private void cancelAlarm() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
         alarmManager.cancel(pendingIntent);
         Toast.makeText(Main.this,"Alarm off", Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
 
     /*private void onTimeSet (View view){
@@ -149,12 +169,12 @@ public class Main extends AppCompatActivity  implements TimePickerDialog.OnTimeS
 
 
 
-    private void startAlarm(Calendar c) {
+    /*private void startAlarm(Calendar c) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(Main.this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(Main.this, 1, intent, 0);
         if (c.before(Calendar.getInstance())) {
-            c.add(Calendar.DATE, 1);
+            c.add(Calendar.HOUR_OF_DAY, 1);
         }
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
     }
@@ -173,6 +193,20 @@ public class Main extends AppCompatActivity  implements TimePickerDialog.OnTimeS
         //updateTimeText(c);
         startAlarm(c);
 
+    }*/
+
+    private void createNotificationChannel() {
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name ="LemubitReminderChannel";
+            String description = "Channel for LemubitReminder";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifyLemubit",name,importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     public void Note(List<String> tags){

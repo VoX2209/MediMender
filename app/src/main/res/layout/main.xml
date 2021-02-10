@@ -115,8 +115,7 @@
                                     android:id="@+id/medName"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="#4d4d4d"
-                                    tools:text="Paracetamol" />
+                                    android:textColor="#4d4d4d" />
 
                                 <TextView
                                     android:id="@+id/medQuantity"
